@@ -4,6 +4,7 @@ def get_arguments():
     parser = argparse.ArgumentParser()
 
     # workspace:
+    parser.add_argument('--not_cuda', action='store_true', help='disables cuda', default=0)
     parser.add_argument('--manualSeed', type=int, help='manual seed', default=3473)
 
     #stage hyper parameters:
