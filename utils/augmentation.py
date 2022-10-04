@@ -29,7 +29,7 @@ class GeoAugment():
         return Compose([
         Flip(),
         Rotate(),
-        RandomCrop(374, 374),
+        RandomCrop(256, 256),
         Resize(256, 256),
         A.Normalize(mean = (0.5, 0.5, 0.5), std = (0.5, 0.5, 0.5)),
         ToTensorV2(),

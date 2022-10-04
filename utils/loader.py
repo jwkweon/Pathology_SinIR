@@ -4,7 +4,9 @@ import numpy as np
 import torch
 from torch.utils.data import DataLoader
 from torch.utils.data import Dataset, Sampler
-from torchvision.transforms import ToTensor, RandomCrop
+from torchvision import transforms
+from torchvision.datasets import ImageFolder
+from torchvision.transforms import ToTensor, Normalize, Resize, RandomCrop
 from skimage import color, morphology, filters
 from PIL import Image
 
@@ -193,3 +195,41 @@ class InfiniteSampler(Sampler):
         while True:
             for idx in torch.randperm(self.N):
                 yield idx
+
+
+class PathologyLoader:
+    def __init__(self, opt):
+        self.opt = opt
+        self.dir_path = opt.dir_path
+        self.transform = self._transform()
+
+        self.dataset = self.load_data()
+        self.len_ds = self.dataset.__len__()
+        self.dataloader = self.make_loader(self.dataset)
+        self.dataloader_iter = self.make_iter(self.dataset)
+
+
+    def load_data(self):
+        return ImageFolder(self.dir_path, transform=self.transform)
+
+    def make_loader(self, dataset):
+        return DataLoader(dataset, self.opt.batch_size)
+
+    def make_iter(self, dataset):
+        data_loader_iter = iter(
+            DataLoader(
+                dataset,
+                batch_size = self.opt.batch_size,
+                num_workers = 1,
+                sampler = InfiniteSampler(dataset)
+            )
+        )
+        return data_loader_iter
+
+    def _transform(self):
+        return transforms.Compose([
+                ToTensor(),
+                Normalize([0.5, 0.5, 0.5], [0.5, 0.5, 0.5]),
+                Resize(size=self.opt.img_shape)
+            ])
+

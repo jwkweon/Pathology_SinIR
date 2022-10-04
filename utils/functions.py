@@ -66,9 +66,9 @@ def np2torch(x, opt):
     return x
 
 def generate_dir2save(opt):
-    training_image_name = opt.img_path[:-4].split("/")[-1]
-    dir2save = 'TrainedModels/{}/'.format(training_image_name)
-    dir2save += opt.timestamp
+    #training_image_name = opt._path[:-4].split("/")[-1]
+    dir2save = 'TrainedModels/{}/'.format(opt.timestamp)
+    #dir2save += opt.timestamp
     #dir2save += "_{}".format(opt.train_mode)
 
     return dir2save

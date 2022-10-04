@@ -7,6 +7,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 from torchvision.utils import save_image
 
+import lpips
 from utils.functions import norm, denorm, interp
 from utils.ssim import SSIM
 #from utils.interp_matlab import imresize
@@ -22,9 +23,18 @@ class Loss(nn.Module):
                 win_size = int(loss[loss.rfind('m') + 1:])
                 self.ssim = SSIM(data_range=1.0, win_size=win_size, nonnegative_ssim=True)
                 self.loss_funcs.append(self._ssim)
-            elif loss == 'mse':
+            elif loss == 'mse': #L2
                 self.mse = nn.MSELoss()
                 self.loss_funcs.append(self._mse)
+            elif loss == 'mae': #L1
+                self.mae = nn.L1Loss()
+                self.loss_funcs.append(self._mae)
+            elif loss == 'lpips':
+                self.lpips = lpips.LPIPS(net='vgg').cuda()
+                self.loss_funcs.append(self._lpips)
+            elif loss == 'crossentropy':
+                self.ce = nn.CrossEntropyLoss()
+                self.loss_funcs.append(self._ce)
 
     def _ssim(self, x, y):
         x, y = denorm(x), denorm(y)
@@ -32,6 +42,15 @@ class Loss(nn.Module):
 
     def _mse(self, x, y):
         return self.mse(x, y)
+
+    def _mae(self, x, y):
+        return self.mae(x, y)
+
+    def _lpips(self, x, y):
+        return self.lpips(x, y)
+
+    def _ce(self, x, y):
+        return self.ce(x, y)
 
     def forward(self, x, y):
         loss = 0
