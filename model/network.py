@@ -99,13 +99,14 @@ class NetworkWithCode(nn.Module):
         self.from_code = nn.Sequential(
             # nn.Embedding(self.n_class, 4),
             nn.Linear(self.n_class, 128),
-            nn.Linear(128, 256*256)
+            nn.Linear(128, 1024),
+            nn.Linear(1024, 256*256)
         )
 
         self.conv_block = ConvBlock(net_ch, net_ch, norm='in', act='leakyrelu')
 
         self.layers = nn.Sequential(
-            *[self.conv_block for _ in range(6)]
+            *[self.conv_block for _ in range(3)]
         )
     
     def forward(self, x, code):

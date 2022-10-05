@@ -76,15 +76,15 @@ class Augment():
                 OneOf([
                     ChannelDropout(channel_drop_range=(1, 1), fill_value=0),
                     ChannelShuffle()]),
-                ToSepia(),
+                #ToSepia(),
                 HueSaturationValue(hue_shift_limit=25, sat_shift_limit=0.2, val_shift_limit=0, p=0.1)],
                 p=0.25),
-            Cutout(num_holes=2, max_h_size=30, max_w_size=30,
-                   fill_value=[color_r, color_g, color_b], p=0.9),
+            #Cutout(num_holes=2, max_h_size=30, max_w_size=30,
+            #       fill_value=[color_r, color_g, color_b], p=0.9),
             #A.Normalize(mean = (0.5, 0.5, 0.5), std = (0.5, 0.5, 0.5)),
             ToTensorV2(),
             ],
-            #additional_targets={'image': 'image', 'mask': 'image'}
+            #additional_targets={'image0': 'image', 'image1': 'image', 'image2': 'image', 'image3': 'image'}
         )
     
     def transform(self, **x):

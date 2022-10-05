@@ -27,15 +27,27 @@ def move_to_cpu(t):
     t = t.to(torch.device('cpu'))
     return t
 
+def convert_batch_image_np(inp):
+    if inp.shape[1]==3:
+        inp = denorm(inp)
+        inp = move_to_cpu(inp[:,:,:,:])
+        inp = inp.numpy().transpose((0,2,3,1))
+    else:
+        inp = denorm(inp)
+        inp = move_to_cpu(inp[:,-1,:,:])
+        inp = inp.numpy().transpose((0,1,2))
+    inp = np.clip(inp,0,1)
+    return inp
+
 def convert_image_np(inp):
     if len(inp.shape) == 4:
         if inp.shape[1]==3:
             inp = denorm(inp)
-            inp = move_to_cpu(inp[-1,:,:,:])
-            inp = inp.numpy().transpose((1,2,0))
+            inp = move_to_cpu(inp[:,:,:,:])
+            inp = inp.numpy().transpose((0,2,3,1))
         else:
             inp = denorm(inp)
-            inp = move_to_cpu(inp[-1,-1,:,:])
+            inp = move_to_cpu(inp[:,-1,:,:])
             inp = inp.numpy().transpose((0,1))
     else:
         if inp.shape[0]==3:

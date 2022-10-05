@@ -30,7 +30,7 @@ def get_arguments():
     parser.add_argument('--beta1', type=float, default=0.5, help='beta1 for adam. default=0.5')
     parser.add_argument('--beta2', type=float, default=0.999, help='beta2 for adam. default=0.999')
     parser.add_argument('--niter', type=int, default=500, help='number of iteration per scale')
-    parser.add_argument('--d_niter', type=int, default=500, help='number of iteration per scale')
+    parser.add_argument('--d_niter', type=int, default=100, help='number of iteration per scale')
     parser.add_argument('--pixel_shuffle_p', type=float, default=0.005, help='pixel shuffle rate (0.005 => 0.5%)')
     # parser.add_argument('--', type=, help='', default= )
 
