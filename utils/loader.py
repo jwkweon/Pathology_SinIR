@@ -4,8 +4,10 @@ import numpy as np
 import torch
 from torch.utils.data import DataLoader
 from torch.utils.data import Dataset, Sampler
-from torchvision import transforms
 from torchvision.datasets import ImageFolder
+
+from torchvision import transforms
+import torchvision.transforms as T
 from torchvision.transforms import ToTensor, Normalize, Resize, RandomCrop
 from skimage import color, morphology, filters
 from PIL import Image
@@ -230,6 +232,28 @@ class PathologyLoader:
         return transforms.Compose([
                 ToTensor(),
                 Normalize([0.5, 0.5, 0.5], [0.5, 0.5, 0.5]),
-                Resize(size=self.opt.img_shape)
+                T.RandomHorizontalFlip(0.2),
+                T.RandomVerticalFlip(0.2),
+                T.RandomRotation(15),
+                T.RandomResizedCrop(self.opt.img_shape, (0.4,1))
+                # Resize(size=self.opt.img_shape)
             ])
+
+class TestLoader(PathologyLoader):
+    def __init__(self, opt):
+        super().__init__(opt)
+        self.dir_path = self.opt.dir_test_path
+
+        self.dataset = self.load_data()
+        self.len_ds = self.dataset.__len__()
+        self.dataloader = self.make_loader(self.dataset)
+        self.dataloader_iter = self.make_iter(self.dataset)
+
+    def _transform(self):
+        return transforms.Compose([
+                ToTensor(),
+                Normalize([0.5, 0.5, 0.5], [0.5, 0.5, 0.5]),
+                Resize(size=self.opt.img_shape)
+        ])
+
 

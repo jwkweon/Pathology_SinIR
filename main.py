@@ -17,7 +17,7 @@ if __name__ == '__main__':
     parser = get_arguments()
     #parser.add_argument('--img_path', help='input slide image for training', required=True)
     parser.add_argument('--dir_path', help='input image dir for training', required=True)
-    #parser.add_argument('--mask_path', help='mask path for inference', default=None)
+    parser.add_argument('--dir_test_path', help='test image dir', default=None)
     parser.add_argument('--gpu', type=int, help='which GPU to use', default=0)
     parser.add_argument('--img_shape', help='target size of input image', default=(256, 256))
     # Inference
