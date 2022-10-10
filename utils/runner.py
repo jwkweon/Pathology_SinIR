@@ -147,7 +147,9 @@ class Runner:
             loss_mae = self.loss_mae(out, img)
             loss_lpips = self.loss_lpips(out, augmented_img)
 
-            loss = loss_ssim + loss_mae + loss_ce
+            loss = loss_lpips.mean()*0.1 + loss_mae*10 #+loss_ssim*0.1
+            # loss = loss_mae*10 + loss_lpips.mean()*0.1  # best perform currently
+            # loss = loss_ssim + loss_mae + loss_ce
 
             self._step(loss, optim=self.optim_g, optim_sch=self.optim_g_sch, retain_graph=True)
 
