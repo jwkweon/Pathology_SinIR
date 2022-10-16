@@ -103,6 +103,7 @@ class JitAugment():
             'color': [self.rand_brightness, self.rand_saturation, self.rand_contrast],
             'translation': [self.rand_translation],
             'cutout': [self.rand_cutout],
+            'shuffle': [self.shuffle_pixel],
         }
         self.policy = policy
         #self._transfrom = self.jit_aug()
@@ -152,6 +153,19 @@ class JitAugment():
         mask[grid_batch, grid_x, grid_y] = 0
         x = x * mask.unsqueeze(1)
         return x
+
+    def shuffle_pixel(self, x, p=0.005):
+        if p == 0:
+            return x.clone()
+
+        b, c, h, w = x.shape
+        out = x.clone()
+        original_idx = torch.arange(h * w)
+        shuffle_idx = torch.randperm(h * w)
+        shuffle_idx = torch.where(torch.rand(*original_idx.shape) > p, original_idx, shuffle_idx)
+
+        out = out.view(b, 3, -1)[:, :, shuffle_idx].view(*out.shape)
+        return out
 
     def transform(self, x):
         if self.policy:

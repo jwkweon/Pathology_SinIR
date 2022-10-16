@@ -47,9 +47,14 @@ if __name__ == '__main__':
     except OSError:
         pass
 
-    # train model
+    ######################################################################################
+    # train model                                                                        #
+    # python main.py --img_path 'imgs/path.png' --mask_path 'imgs/mask_path.png' --gpu 0 #
+    ######################################################################################
     runner = Runner(PathologyLoader, dir2save, opt)
-    runner.train_d()
+    # runner.train_d()
     runner.train()
-    # python main.py --img_path 'imgs/path.png' --mask_path 'imgs/mask_path.png' --gpu 0
+
+    # save model
+    runner.save()
     

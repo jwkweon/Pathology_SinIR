@@ -234,7 +234,7 @@ class PathologyLoader:
                 Normalize([0.5, 0.5, 0.5], [0.5, 0.5, 0.5]),
                 T.RandomHorizontalFlip(0.3),
                 T.RandomVerticalFlip(0.3),
-                #T.RandomRotation(10),
+                T.RandomRotation(10),
                 T.RandomResizedCrop(self.opt.img_shape, (0.3,1))
                 # Resize(size=self.opt.img_shape)
             ])
