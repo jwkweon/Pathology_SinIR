@@ -175,7 +175,7 @@ class NetworkWithCode_V2(nn.Module):
         self.conv_block = ConvBlock(net_ch, net_ch, ker_s=3, norm='in', act='leakyrelu')
 
         self.body = nn.Sequential(
-            *[self.conv_block for _ in range(3)]
+            *[self.conv_block for _ in range(4)]
         )
         self.to_rgb = nn.Sequential(
             nn.Conv2d(net_ch, net_ch // 2, 1, 1, 0),

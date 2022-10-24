@@ -43,7 +43,8 @@ class Runner:
 
         self.train_loader = self.img_loader.dataloader
         self.train_loader_iter = self.img_loader.dataloader_iter
-        self.aug = JitAugment(policy='color,cutout,shuffle')    # translation decreases performance
+        self.aug = JitAugment(policy='color,shuffle')    # translation decreases performance
+        self.cut_aug = JitAugment(policy='cutout')
         # self.rand_aug = RandAug()
 
         # Define network
@@ -141,13 +142,16 @@ class Runner:
                 l = l.to(self.opt.device)
 
             shuffle_l = torch.randperm(len(l)).to(self.opt.device)
+            
+            if torch.rand(1) <= 0.25:
+                img = self.cut_aug.transform(img)
             augmented_img = self.aug.transform(img)
 
             out = self._forward(augmented_img, l, self.net_gen)
-            out_label = self.d_net(out)
+            #out_label = self.d_net(out)
 
-            loss_ce = self.loss_ce(out_label, torch.eye(self.num_classes)[l].to(self.opt.device))
-            loss_ssim = self.loss_ssim(out, img)
+            #loss_ce = self.loss_ce(out_label, torch.eye(self.num_classes)[l].to(self.opt.device))
+            loss_ssim = self.loss_ssim(out, augmented_img)
             loss_mae = self.loss_mae(out, img)
             loss_lpips = self.loss_lpips(out, augmented_img)
 

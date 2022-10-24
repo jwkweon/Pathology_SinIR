@@ -138,7 +138,7 @@ class JitAugment():
         x = x_pad.permute(0, 2, 3, 1).contiguous()[grid_batch, grid_x, grid_y].permute(0, 3, 1, 2).contiguous()
         return x
 
-    def rand_cutout(self, x, ratio=0.5):
+    def rand_cutout(self, x, ratio=0.4):
         cutout_size = int(x.size(2) * ratio + 0.5), int(x.size(3) * ratio + 0.5)
         offset_x = torch.randint(0, x.size(2) + (1 - cutout_size[0] % 2), size=[x.size(0), 1, 1], device=x.device)
         offset_y = torch.randint(0, x.size(3) + (1 - cutout_size[1] % 2), size=[x.size(0), 1, 1], device=x.device)
@@ -151,7 +151,10 @@ class JitAugment():
         grid_y = torch.clamp(grid_y + offset_y - cutout_size[1] // 2, min=0, max=x.size(3) - 1)
         mask = torch.ones(x.size(0), x.size(2), x.size(3), dtype=x.dtype, device=x.device)
         mask[grid_batch, grid_x, grid_y] = 0
+
+        alpha = (torch.rand(1) / 0.19) + 0.80
         x = x * mask.unsqueeze(1)
+        x += (1-x) * (1-mask.unsqueeze(1)) * alpha.cuda()
         return x
 
     def shuffle_pixel(self, x, p=0.005):
