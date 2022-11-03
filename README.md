@@ -1,5 +1,5 @@
 # Pathology_SinIR
 
-## 1. Generate Mask Images
-## 2. Mask to Images
+## 1. Train
+## 2. Inference
 ## 3. -ing
